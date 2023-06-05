@@ -219,38 +219,44 @@ function App() {
           <Header email={authEmail} onSignOut={handleSignOut} />
 
           <Routes>
-            <ProtectedRoute
-              path='/'
-              component={Main}
-              loggedIn={loggedIn}
-              onEditProfile={handleEditProfileClick}
-              onEditAvatar={handleEditAvatarClick}
-              onAddPlace={handleAddPlaceClick}
-              cards={cards}
-              onCardClick={handleCardClick}
-              onCardLike={handleCardLike}
-              onCardDeleteClick={handleDeleteClick}
-              onConfirmDelete={handleDeleteClick}
+            <Route path='/'
+              element={
+                <ProtectedRoute
+                element={Main}
+                loggedIn={loggedIn}
+                onEditProfile={handleEditProfileClick}
+                onEditAvatar={handleEditAvatarClick}
+                onAddPlace={handleAddPlaceClick}
+                cards={cards}
+                onCardClick={handleCardClick}
+                onCardLike={handleCardLike}
+                onCardDeleteClick={handleDeleteClick}
+                onConfirmDelete={handleDeleteClick} />
+              } 
             />
 
-            <Route path='/sign-in'>
-              <Login 
+            <Route 
+              path='/sign-in'
+              element={
+                <Login 
                 navigate={navigate}
                 loggedIn={setLoggedIn}
                 onLogin={handleLogin}
-              />
-            </Route>
+              />}
+            />
 
-            <Route path='/sign-up'>
-              <Register
+            <Route 
+              path='/sign-up'
+              element={
+                <Register
                 navigate={navigate}
                 onRegister={handleRegister}
-              />
-            </Route>
+              />}
+            />
           </Routes>
 
-          {loggedIn && <Footer />}
-          {/* <Footer /> */}
+          {/* {loggedIn && <Footer />} */}
+          <Footer />
 
           <EditProfilePopup
             isOpen={isEditProfilePopupOpen} //TODO: добавить ux и оверлей лдя всех попап
