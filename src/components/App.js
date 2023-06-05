@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 
 import '../index.css';
 
@@ -45,7 +45,7 @@ function App() {
       false
     ); 
 
-  /** состояние авторизации пользователя и его данных */    
+  /** состояние авторизации/регистрации пользователя и его данных */    
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
   const [userEmail, setUserEmail] = useState('');
