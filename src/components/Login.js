@@ -1,28 +1,17 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useForm } from '../hooks/useForm.js';
 
+/** компонент авторизации */
 function Login({ onLogin }) {
-  const [authEmail, setAuthEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  function handleChangeEmail(e) {
-    // const { value } = e.target;
-    // e.target.name === 'email' ? setAuthEmail(value) : setPassword(value);
-    setAuthEmail(e.target.value);
-  }
-
-  function handleChangePassword(e) {
-    setPassword(e.target.value);
-  }
+  const { values, handleChange } = useForm({ email: '', password: '' });
 
   function handleSubmit(e) {
     e.preventDefault();
-    // onLogin({
-    //   email: authEmail.email,
-    //   password: authEmail.password
-    // });
-    onLogin(authEmail, password);
+    onLogin(values);
   }
 
+  /** разметка jsx */
   return (
     <section className='auth'>
       <div className='auth__container'>
@@ -36,33 +25,39 @@ function Login({ onLogin }) {
           <input
             className='auth__input'
             name='email'
-            value={authEmail.email || ''}
-            onChange={handleChangeEmail}
+            value={values.email || ''}
+            onChange={handleChange}
             type='email'
-            placeholder='e-mail'
+            placeholder='E-mail'
             minLength='2'
             maxLength='30'
-            required
-            autoComplete='off'
+            //required
+            autoComplete='email'
           />
 
           <input
             className='auth__input'
             name='password'
-            value={password || ''}
-            onChange={handleChangePassword}
+            value={values.password || ''}
+            onChange={handleChange}
             type='password'
             placeholder='Пароль'
             minLength='8'
             maxLength='15'
-            required
+            //required
             autoComplete='off'
           />
 
-          <button className='auth__submit-button' type='submit'>
+          <button to='/sign-up' className='auth__submit-button' type='submit'>
             Войти
           </button>
         </form>
+        <div className='auth__signup'>
+          <p>Еще не зарегистрированы?</p>
+          <Link to='/sign-up' className='auth__link'>
+            Регистрация
+          </Link>
+        </div>
       </div>
     </section>
   );

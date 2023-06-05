@@ -26,13 +26,14 @@ class Auth {
   }
 
   register(data) {
-    return this._request(`/signup`, 'POST', data);
+    return this._request(`/signup`, 'POST', data); /** signup - регистрация */
   }
 
   login(data) {
-    return this._request(`/signin`, 'POST', data);
+    return this._request(`/signin`, 'POST', data); /** signin - авторизация */
   }
 
+  /** проверем токен */
   checkToken(jwt) {
     return fetch(`${this._url}/users/me`, {
       method: 'GET',
@@ -45,7 +46,7 @@ class Auth {
 }
 
 const auth = new Auth({
-  url: 'https://auth.nomoreparties.co',
+  url: 'https://auth.nomoreparties.co', /** базовый url */
   headers: {
     'Content-Type': 'application/json',
   },
@@ -53,48 +54,39 @@ const auth = new Auth({
 
 export { auth };
 
-// export const url = 'https://auth.nomoreparties.co';
 
-// const getResponseData = (res) => {
+// export const BASE_URL = "https://auth.nomoreparties.co";
+
+// const makeRequest = (url, method, body, token) => {
+//   const config = {
+//     method: method,
+//     headers: {
+//       Accept: "application/json",
+//       "Content-Type": "application/json",
+//     },
+//   };
+//   if (body) {
+//     config.body = JSON.stringify(body);
+//   }
+//   if (token) {
+//     config.headers.authorization = `Bearer ${token}`;
+//   }
+//   return fetch(`${BASE_URL}${url}`, config).then((res) => {
 //     if (res.ok) {
-//         return res.json();
-//       }
-//       return Promise.reject(`Ошибка: ${res.status}`);
+//       return res.json();
+//     }
+//     throw new Error(`Ошибка код ${res.status}`);
+//   });
 // };
 
-//   /** универсальный метод запрос с проверкой  */
-// const request = (path, method, data) => {
-//     let body = data;
-//     if((method === 'PATCH' || method === 'POST') && data) {
-//       body = JSON.stringify(data);
-//     }
-//     return fetch(url + path, {
-//       method,
-//       headers,
-//       body,
-//     })
-//     .then(getResponseData);
-// }
+// export const register = ({ email, password }) => {
+//   return makeRequest("/signup", "POST", { email, password }, null);
+// };
 
-// const headers = {
-//    'Accept': 'application/json',
-//    'Content-Type': 'application/json'
-// }
+// export const login = ({ email, password }) => {
+//   return makeRequest("/signin", "POST", { email, password }, null);
+// };
 
-// export const authorize = ({ data }) => {
-//    return request(`${url}/signin`, 'POST', data)
-// }
-
-// export const register = ({ data }) => {
-//    return request(`${url}/signup`, 'POST', data)
-// }
-
-// export const getContent = (token) => {
-//    return request(`${url}/users/me`, {
-//       method: 'GET',
-//       headers: {
-//          ...headers,
-//          Authorization: `Bearer ${token}`,
-//       },
-//    }).then((res) => getResponseData(res));
+// export const checkToken = (token) => {
+//   return makeRequest("/users/me", "GET", null, token);
 // };

@@ -1,14 +1,21 @@
+import React from 'react';
+import { usePopupClose } from '../hooks/usePopupClose.js';
 import correct from '../images/correct.svg';
 import error from '../images/error.svg';
 
+/** компонен попап информирования о статусе регистрации */
+
 function InfoTooltip({ isOpen, isConfirmStatus, onClose }) {
+  usePopupClose(isOpen, onClose);
+
+  /** разметка jsx */
   return (
     <div className={`popup ${isOpen ? 'popup_opened' : ''}`}>
-      <div className='popup__container'>
-        <button 
-          className='popup__close' 
-          type='button' 
-          onClick={onClose} 
+      <div className='popup__container popup-tooltip'>
+        <button
+          className='popup__close'
+          type='button'
+          onClick={onClose}
           aria-label='Кнопка закрытия'
         />
         <img
@@ -19,12 +26,16 @@ function InfoTooltip({ isOpen, isConfirmStatus, onClose }) {
               ? 'Вы успешно зарегистрировались!'
               : 'Что-то пошло не так! Попробуйте еще раз'
           }
+          //alt='Статус регистрации'
         />
+        {/* <span className='popup__res-status'>
+          {isConfirmStatus}
+        </span> */}
 
         <h3 className='popup__reg-title'>
           {isConfirmStatus
             ? 'Вы успешно зарегистрировались!'
-            : 'Что-то пошло не так! Попробуйте еще ращ'}
+            : 'Что-то пошло не так! Попробуйте еще раз.'}
         </h3>
       </div>
     </div>
