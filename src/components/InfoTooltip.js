@@ -26,12 +26,8 @@ function InfoTooltip({ isOpen, isConfirmStatus, onClose }) {
               ? 'Вы успешно зарегистрировались!'
               : 'Что-то пошло не так! Попробуйте еще раз'
           }
-          //alt='Статус регистрации'
         />
-        {/* <span className='popup__res-status'>
-          {isConfirmStatus}
-        </span> */}
-
+       
         <h3 className='popup__reg-title'>
           {isConfirmStatus
             ? 'Вы успешно зарегистрировались!'

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 
 import '../index.css';
 
@@ -43,11 +43,16 @@ function App() {
   const [isLoading, setIsLoading] = /** переменная для отслеживания состояния загрузки во время ожидания ответа от сервера */
     useState(
       false
-    ); 
+    );
+  /** стейты индикатора загрузки для каждого попап */
+  const [isLoadingEditProfilePopup, setIsLoadingEditProfilePopup] = useState(false); 
+  const [isLoadingAddPlacePopup, setIsLoadingAddPlacePopup] = useState(false); 
+  const [isLoadingEditAvatarPopup, setIsLoadingEditAvatarPopup] = useState(false); 
+  const [isLoadingConfirmDeletePopup, setIsLoadingConfirmDeletePopup] = useState(false); 
 
   /** состояние авторизации/регистрации пользователя и его данных */    
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isRegister, setIsRegister] = useState(false);
+  const [isSuccessInfoTooltipStatus, setIsSuccessInfoTooltipStatus] = useState(false);
   const [userEmail, setUserEmail] = useState('');
 
   const navigate = useNavigate();
@@ -55,7 +60,8 @@ function App() {
   /** эффекты:
    * получение данных пользователя и карточек при загрузке стр */
   useEffect(() => {
-    Promise.all([api.getUserInfoApi(), api.getInitialCards()])
+    if (!isLoggedIn) {
+      Promise.all([api.getUserInfoApi(), api.getInitialCards()])
       .then(([currentUser, initialCards]) => {
         setCurrentUser(currentUser);
         setCards(initialCards);
@@ -63,7 +69,8 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+    }
+  }, [isLoggedIn]);
 
   /** проверка токена */
   useEffect(() => {
@@ -98,7 +105,7 @@ function App() {
     setIsConfirmDeletePopupOpen(true);
   }
 
-  function hanadleInfoTooltip() {
+  function openInfoTooltip() {
     setIsInfoTooltipOpen(true);
   }
 
@@ -122,7 +129,7 @@ function App() {
   /** универсальная функция, которая принимает функцию запроса */
   function handleSubmit(request) {
     /** изменяем текст кнопки до вызова запроса */
-    setIsLoading(true);
+    //setIsLoading(true);
     request()
       /** закрывать попап нужно только в `then` */
       .then(closeAllPopups)
@@ -130,41 +137,57 @@ function App() {
       /** console.error обычно используется для логирования ошибок, если никакой другой обработки ошибки нет */
       .catch(console.error)
       /** в каждом запросе в `finally` возвращаем обратно начальный текст кнопки */
-      .finally(() => setIsLoading(false));
+      //.finally(() => setIsLoading(false));
   }
 
   /** обработчик удаления карточки */
   function handleCardDelete(card) {
+    setIsLoadingConfirmDeletePopup(true)
     function makeRequest() {
-      return api.removeCardApi(card._id).then(() => {
+      return api
+        .removeCard(card._id)
+        .then(() => {
         setCards((cards) => cards.filter((c) => c._id !== card._id));
-      });
+      })
+        .finally(() => {setIsLoadingConfirmDeletePopup(false)})
     }
     handleSubmit(makeRequest);
   }
 
   /** обработчик редактирования данных пользователя */
   function handleUpdateUser(inputValues) {
+    setIsLoadingEditProfilePopup(true)
     function makeRequest() {
-      return api.editUserInfo(inputValues).then(setCurrentUser);
+      return api
+        .editUserInfo(inputValues)
+        .then(setCurrentUser)
+        .finally(() => {setIsLoadingEditProfilePopup(false)})
     }
     handleSubmit(makeRequest);
   }
 
   /** обработчик редактирования аватара пользователя */
   function handleUpdateAvatar(inputValues) {
+    setIsLoadingEditAvatarPopup(true)
     function makeRequest() {
-      return api.editUserAvatar(inputValues).then(setCurrentUser);
+      return api
+        .editUserAvatar(inputValues)
+        .then(setCurrentUser)
+        .finally(() => {setIsLoadingEditAvatarPopup(false)})
     }
     handleSubmit(makeRequest);
   }
 
   /** обработчик добавления новой карточки */
   function handleAddPlaceSubmit(inputValues) {
+    setIsLoadingAddPlacePopup(true)
     function makeRequest() {
-      return api.addCards(inputValues).then((newCard) => {
-        setCards([newCard, ...cards]);
-      });
+      return api
+        .addCards(inputValues)
+        .then((newCard) => {
+        setCards([newCard, ...cards])
+      })
+        .finally(() => {setIsLoadingAddPlacePopup(false)})
     }
     handleSubmit(makeRequest);
   }
@@ -174,14 +197,14 @@ function App() {
     return auth
       .register(data)
       .then((res) => {
-        setIsRegister(true);
-        hanadleInfoTooltip();
+        setIsSuccessInfoTooltipStatus(true);
+        openInfoTooltip();
         navigate('/sign-in');
       })
       .catch((err) => {
         console.log(err);
-        setIsRegister(false);
-        hanadleInfoTooltip();
+        setIsSuccessInfoTooltipStatus(false);
+        openInfoTooltip();
       })
   }
 
@@ -191,12 +214,12 @@ function App() {
       .login(data)
       .then((res) => {
         localStorage.setItem('jwt', res.token);
+        setUserEmail(data.email)
         setIsLoggedIn(true);
         navigate('/');
       })
       .catch((err) => {
         console.log(err);
-        setIsInfoTooltipOpen(true);
       });
   }
 
@@ -208,8 +231,8 @@ function App() {
     }
     auth
       .checkToken(jwt)
-      .then((data) => {
-        setUserEmail(data.email);
+      .then((res) => {
+        setUserEmail(res.data.email);
         setIsLoggedIn(true);
         navigate('/')
       })
@@ -275,23 +298,25 @@ function App() {
                 <Register navigate={navigate} onRegister={handleRegister} />
               }
             />
+
+            <Route path='*' 
+              element={isLoggedIn ? <Navigate to='/' /> : <Navigate to='/sign-in' /> } 
+            />
           </Routes>
 
-          {/* {loggedIn && <Footer />} */}
           <Footer />
 
           <EditProfilePopup
-            isOpen={isEditProfilePopupOpen} //TODO: добавить ux и оверлей лдя всех попап
-            onClose={closeAllPopups}
+            isOpen={isEditProfilePopupOpen}
             onUpdateUser={handleUpdateUser}
-            onLoading={isLoading}
+            isLoading={isLoadingEditProfilePopup}
           />
 
           <AddPlacePopup
             isOpen={isAddPlacePopupOpen}
             onClose={closeAllPopups}
             onAddPlace={handleAddPlaceSubmit}
-            onLoading={isLoading}
+            isLoading={isLoadingAddPlacePopup}
           />
 
           <ConfirmDeletePopup
@@ -299,21 +324,21 @@ function App() {
             onClose={closeAllPopups}
             card={deletedCard}
             onSubmit={handleCardDelete}
-            onLoading={isLoading}
+            isLoading={isLoadingConfirmDeletePopup}
           />
 
           <EditAvatarPopup
             isOpen={isEditAvatarPopupOpen}
             onClose={closeAllPopups}
             onUpdateAvatar={handleUpdateAvatar}
-            onLoading={isLoading}
+            isLoading={isLoadingEditAvatarPopup}
           />
 
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
           <InfoTooltip
             isOpen={isInfoTooltipOpen}
-            isConfirmStatus={isRegister}
+            isConfirmStatus={isSuccessInfoTooltipStatus}
             onClose={closeAllPopups}
           />
         </div>

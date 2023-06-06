@@ -10,7 +10,7 @@ function Main({
   onCardClick,
   onCardLike,
   onCardDeleteClick,
-  onConfirnDelete,
+  onConfirmDelete,
 }) {
   const currentUser =
     useContext(CurrentUserContext); /** подписка на контекст */
@@ -57,7 +57,7 @@ function Main({
                 onCardClick={onCardClick}
                 onCardLike={onCardLike}
                 onCardDeleteClick={onCardDeleteClick}
-                onConfirnDelete={onConfirnDelete}
+                //onConfirmDelete={onConfirmDelete}
               />
             )
           )}

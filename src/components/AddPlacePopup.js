@@ -2,22 +2,9 @@ import React, { useEffect } from 'react';
 import { PopupWithForm } from './PopupWithForm.js';
 import { useForm } from '../hooks/useForm.js';
 
-function AddPlacePopup({ isOpen, onClose, onAddPlace, onLoading }) {
-  // const [link, setLink] = useState('');
-  // const [name, setName] = useState('');
-  // const link = useForm();
-  // const name = useForm()
+function AddPlacePopup({ isOpen, onClose, onAddPlace, isLoading }) {
 
   const {values, handleChange, setValues} = useForm({}); 
-
-  /** данные инпутов */
-  // function handleEditName(e) {
-  //   setName(e.target.value);
-  // }
-
-  // function handleEditlink(e) {
-  //   setLink(e.target.value);
-  // }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -30,8 +17,8 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, onLoading }) {
   /** чистим инпуты */
   useEffect(() => {
     setValues({
-      link: (''),
-      name: ('')
+      link: '',
+      name: ''
     })
   }, [isOpen]);
 
@@ -39,7 +26,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, onLoading }) {
     <PopupWithForm
       name='popup-add'
       title='Новое место'
-      text={onLoading? 'Создаем...' : 'Создать'}
+      text={isLoading? 'Создаем...' : 'Создать'}
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
@@ -54,8 +41,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, onLoading }) {
           minLength={2}
           maxLength={30}
           required
-          value={values.name}
-          //onChange={handleEditName}
+          value={values.name || ''}
           onChange={handleChange}
         />
         <span className='form__item-error cardname-input-error' />
@@ -66,8 +52,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, onLoading }) {
           className='form__item form__item_image_link'
           placeholder='Ссылка на картинку'
           required
-          value={values.link}
-          //onChange={handleEditlink}
+          value={values.link || ''}
           onChange={handleChange}
         />
         <span className='form__item-error link-input-error' />

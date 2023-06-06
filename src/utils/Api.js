@@ -51,25 +51,25 @@ class Api {
   }
 
   //удалим карточку
-  removeCardApi(_id) {
-    return this._request(`/cards/${_id}`, 'DELETE')
+  removeCard(id) {
+    return this._request(`/cards/${id}`, 'DELETE')
   }
 
   // поставим лайк карточке
-  addCardLike(_id) {
-    return this._request(`/cards/${_id}/likes`, 'PUT')
+  addCardLike(id) {
+    return this._request(`/cards/${id}/likes`, 'PUT')
   }
 
   // удалим лайк с карточки
-  removeCardLike(_id) {
-    return this._request(`/cards/${_id}/likes`, 'DELETE')
+  removeCardLike(id) {
+    return this._request(`/cards/${id}/likes`, 'DELETE')
   }
 
-  toggleLikeCard(_id, isCardLiked) {
+  toggleLikeCard(id, isCardLiked) {
     if (isCardLiked) {
-      return this._request(`/cards/${_id}/likes`, 'PUT');
+      return this._request(`/cards/${id}/likes`, 'PUT');
     } else {
-      return this._request(`/cards/${_id}/likes`, 'DELETE');
+      return this._request(`/cards/${id}/likes`, 'DELETE');
     }
   }
 }
