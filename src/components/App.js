@@ -40,10 +40,10 @@ function App() {
   ); /** создаем переменную состояния, отвечающую за данные пользователя из апи. Стейт данных текущего пользователя*/
   const [cards, setCards] = useState([]);
   const [deletedCard, setDeletedCard] = useState({});
-  const [isLoading, setIsLoading] = /** переменная для отслеживания состояния загрузки во время ожидания ответа от сервера */
-    useState(
-      false
-    );
+  // const [isLoading, setIsLoading] = /** переменная для отслеживания состояния загрузки во время ожидания ответа от сервера */
+  //   useState(
+  //     false
+  //   );
   /** стейты индикатора загрузки для каждого попап */
   const [isLoadingEditProfilePopup, setIsLoadingEditProfilePopup] = useState(false); 
   const [isLoadingAddPlacePopup, setIsLoadingAddPlacePopup] = useState(false); 
@@ -261,7 +261,7 @@ function App() {
 
   /** разметка jsx */
   return (
-    <AppContext.Provider value={{ isLoading, closeAllPopups }}>
+    // <AppContext.Provider value={{ isLoading, closeAllPopups }}>
       <CurrentUserContext.Provider value={currentUser}>
         <div className='root'>
           <Header loggedIn={isLoggedIn} userEmail={userEmail} onSignOut={handleSignOut} />
@@ -310,6 +310,7 @@ function App() {
             isOpen={isEditProfilePopupOpen}
             onUpdateUser={handleUpdateUser}
             isLoading={isLoadingEditProfilePopup}
+            onClose={closeAllPopups}
           />
 
           <AddPlacePopup
@@ -343,7 +344,7 @@ function App() {
           />
         </div>
       </CurrentUserContext.Provider>
-    </AppContext.Provider>
+    // </AppContext.Provider>
   );
 }
 
